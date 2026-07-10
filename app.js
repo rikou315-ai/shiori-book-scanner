@@ -1,0 +1,21 @@
+const $ = s => document.querySelector(s);
+const screens = [...document.querySelectorAll('.screen')];
+const canvas = $('#pageCanvas'), ctx = canvas.getContext('2d', {willReadFrequently:true});
+let image = null, original = null, tool = 'enhance', drawing = false, marks = [];
+let pages = JSON.parse(localStorage.getItem('shiori-pages') || '[]');
+const demo = {title:'『考えることについて』',date:'今日  10:24',excerpt:'言葉にした瞬間、考えは少しずつ輪郭を持ちはじめる。記憶するだけでなく、後でたどり着ける場所に置いておく。'};
+function show(id){screens.forEach(x=>x.classList.toggle('active',x.id===id));}
+function renderCards(){const box=$('#cards');box.innerHTML='';$('#emptyState').hidden=pages.length>0;pages.forEach((p,i)=>{const n=$('#cardTemplate').content.cloneNode(true);let card=n.querySelector('.card');card.querySelector('img').src=p.data;card.querySelector('h3').textContent=p.title;card.querySelector('.date').textContent=p.date;card.onclick=()=>openDetail(i);box.append(n);});}
+function openDetail(i){const p=pages[i];$('#detailImage').src=p.data;$('#detailTitle').textContent=p.title;$('#detailDate').textContent=p.date;$('#excerpt').textContent=p.excerpt;$('#detailCount').textContent=`${i+1} / ${pages.length}`;show('details');}
+function draw(filter=tool){if(!image)return;const maxW=1800, scale=Math.min(1,maxW/image.width);canvas.width=Math.round(image.width*scale);canvas.height=Math.round(image.height*scale);ctx.drawImage(image,0,0,canvas.width,canvas.height);if(filter==='original')return;let d=ctx.getImageData(0,0,canvas.width,canvas.height), a=d.data;for(let i=0;i<a.length;i+=4){let r=a[i],g=a[i+1],b=a[i+2];if(filter==='mono'){let v=(r+g+b)/3>158?255:25;a[i]=a[i+1]=a[i+2]=v;}else{a[i]=Math.min(255,(r-118)*1.42+160);a[i+1]=Math.min(255,(g-118)*1.42+160);a[i+2]=Math.min(255,(b-118)*1.42+160);}}ctx.putImageData(d,0,0);}
+function loadFile(file){if(!file)return;const reader=new FileReader();reader.onload=e=>{image=new Image();image.onload=()=>{original=e.target.result;draw('enhance');show('editor');};image.src=e.target.result;};reader.readAsDataURL(file);}
+$('#openScanner').onclick=()=>show('scanner'); $('#shutter').onclick=()=>$('#cameraInput').click();$('#importButton').onclick=()=>$('#cameraInput').click();$('#cameraInput').onchange=e=>loadFile(e.target.files[0]);
+document.querySelectorAll('.close').forEach(b=>b.onclick=()=>show('library'));
+document.querySelectorAll('.tool').forEach(b=>b.onclick=()=>{tool=b.dataset.tool;document.querySelectorAll('.tool').forEach(x=>x.classList.toggle('selected',x===b));$('#magicPanel').hidden=tool!=='magic';draw(tool==='magic'?'enhance':tool); redrawMarks();});
+function point(e){const r=canvas.getBoundingClientRect(),p=e.touches?e.touches[0]:e;return{x:(p.clientX-r.left)*canvas.width/r.width,y:(p.clientY-r.top)*canvas.height/r.height};}
+function redrawMarks(){if(!image)return;const temp=new Image();temp.onload=()=>{ctx.drawImage(temp,0,0,canvas.width,canvas.height);ctx.strokeStyle='#131313';ctx.lineCap='round';ctx.lineJoin='round';ctx.lineWidth=Math.max(18,canvas.width*.035);marks.forEach(m=>{ctx.beginPath();m.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.stroke();});};temp.src=canvas.toDataURL();}
+canvas.addEventListener('pointerdown',e=>{if(tool!=='magic')return;drawing=true;marks.push([point(e)]);canvas.setPointerCapture(e.pointerId);});canvas.addEventListener('pointermove',e=>{if(!drawing)return;marks.at(-1).push(point(e));ctx.strokeStyle='#131313';ctx.lineCap='round';ctx.lineWidth=Math.max(18,canvas.width*.035);let m=marks.at(-1);ctx.beginPath();ctx.moveTo(m.at(-2).x,m.at(-2).y);ctx.lineTo(m.at(-1).x,m.at(-1).y);ctx.stroke();});canvas.addEventListener('pointerup',()=>drawing=false);$('#clearMarks').onclick=()=>{marks=[];draw('enhance');};
+$('#savePage').onclick=()=>{if(!image)return;pages.unshift({data:canvas.toDataURL('image/jpeg',.9),...demo});localStorage.setItem('shiori-pages',JSON.stringify(pages));renderCards();show('library');};
+$('#search').oninput=e=>{const q=e.target.value;document.querySelectorAll('.card').forEach(c=>c.hidden=!c.innerText.includes(q));};
+$('#newTab').onclick=()=>$('#search').focus();$('#collectionTab').onclick=()=>alert('コレクション機能は次の画面で追加できます。');renderCards();
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('./service-worker.js');

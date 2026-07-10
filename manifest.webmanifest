@@ -1,0 +1,10 @@
+{
+  "name": "しおり — 本のページスキャナー",
+  "short_name": "しおり",
+  "description": "本のページを撮影、補正、墨消しして保存するアプリ",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f6f7f2",
+  "theme_color": "#49684c",
+  "icons": [{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
+}
