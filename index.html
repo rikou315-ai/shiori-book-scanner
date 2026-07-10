@@ -57,7 +57,7 @@
         <button data-tool="mono" class="tool"><span>◑</span>白黒</button>
         <button data-tool="magic" class="tool"><span>✦</span>マジック</button>
       </div>
-      <div id="cropPanel" class="crop-panel" hidden><div><b>四隅を本の角に合わせる</b><p>台形の写真を、まっすぐなページに補正します。</p></div><button id="applyCrop">補正する</button></div>
+      <div id="cropPanel" class="crop-panel" hidden><div><b>ページの四隅を検出</b><p>「自動検出」の後、必要なら角を調整します。</p></div><div class="crop-buttons"><button id="autoCrop">自動検出</button><button id="applyCrop">補正する</button></div></div>
       <div id="magicPanel" class="magic-panel" hidden><div><b>マジックで隠す</b><p>隠したい部分を指でなぞってください。</p></div><button id="clearMarks">やり直す</button></div>
     </section>
 
@@ -70,6 +70,7 @@
     </section>
   </main>
   <template id="cardTemplate"><article class="card"><img /><div class="card-copy"><p class="eyebrow">SAVED PAGE</p><h3></h3><p class="date"></p><div class="card-tags"><span>#あとで読む</span><span>#読書メモ</span></div></div></article></template>
+  <script async src="https://docs.opencv.org/4.x/opencv.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
