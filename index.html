@@ -11,6 +11,7 @@
   <title>しおり — 本を、あとから読める形に。</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="crop.css" />
+  <link rel="stylesheet" href="home.css" />
 </head>
 <body>
   <main class="app-shell">
@@ -20,6 +21,14 @@
         <button class="avatar" aria-label="プロフィール">木</button>
       </header>
       <div class="search"><span>⌕</span><input id="search" type="search" placeholder="保存したページを検索" /></div>
+      <div class="quick-tools" aria-label="取り込み方法">
+        <button id="cameraTool"><i>⌑</i><span>写真を撮る</span></button>
+        <button id="imageTool"><i>▧</i><span>画像を追加</span></button>
+        <button id="fileTool"><i>▤</i><span>ファイルを追加</span></button>
+        <button id="textTool"><i>Ｔ</i><span>テキスト化</span></button>
+      </div>
+      <input id="imageInput" type="file" accept="image/*" hidden />
+      <input id="fileInput" type="file" accept="image/*,.pdf,application/pdf" hidden />
       <div class="section-row"><h2>最近の保存</h2><button id="filterBtn" class="text-button">すべて</button></div>
       <div id="cards" class="cards"></div>
       <div class="empty-state" id="emptyState" hidden><div>⌑</div><h2>最初の1ページを保存しよう</h2><p>本のページを撮ると、読みやすく整えて<br>あとから見つけられるようにします。</p></div>
