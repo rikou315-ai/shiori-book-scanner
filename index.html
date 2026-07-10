@@ -10,6 +10,7 @@
   <link rel="apple-touch-icon" href="icon.svg" />
   <title>しおり — 本を、あとから読める形に。</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="crop.css" />
 </head>
 <body>
   <main class="app-shell">
@@ -41,11 +42,13 @@
       <div class="editor-stage"><canvas id="pageCanvas"></canvas><div id="drawingLayer"></div></div>
       <div class="auto-note" id="autoNote">✦ 余白を整え、文字をくっきり補正しました</div>
       <div class="tools">
+        <button data-tool="crop" class="tool"><span>⌗</span>切り抜き</button>
         <button data-tool="original" class="tool selected"><span>◐</span>オリジナル</button>
         <button data-tool="enhance" class="tool"><span>☼</span>くっきり</button>
         <button data-tool="mono" class="tool"><span>◑</span>白黒</button>
         <button data-tool="magic" class="tool"><span>✦</span>マジック</button>
       </div>
+      <div id="cropPanel" class="crop-panel" hidden><div><b>四隅を本の角に合わせる</b><p>台形の写真を、まっすぐなページに補正します。</p></div><button id="applyCrop">補正する</button></div>
       <div id="magicPanel" class="magic-panel" hidden><div><b>マジックで隠す</b><p>隠したい部分を指でなぞってください。</p></div><button id="clearMarks">やり直す</button></div>
     </section>
 
